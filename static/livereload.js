@@ -513,7 +513,14 @@ Options.extract = function(document) {
     };
 
     Reloader.prototype.reloadPage = function() {
-      return this.window.document.location.reload();
+      console.log(' i was called now');
+      try {
+        chrome.runtime.reload();
+      } catch (e) {
+        console.log('weeer');
+        /* handle error */
+      }
+      return window.location.reload();
     };
 
     Reloader.prototype.reloadImages = function(path) {

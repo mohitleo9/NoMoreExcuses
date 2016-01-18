@@ -15,10 +15,11 @@
     "run_at": "document_start"
     }],
   "background": {
-    "page": "static/background.html"
+    "page": "static/background.html",
+    "persistent": true
   },
   "permissions": [
-    "activeTab",
+    "management",
     "<all_urls>"
   ]
 }
