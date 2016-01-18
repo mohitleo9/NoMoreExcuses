@@ -4,6 +4,11 @@ module.exports = (grunt) ->
   # Initialize the configuration.
   grunt.initConfig({
 
+    watch:
+      coffee_files:
+        files: ['src/**/*.coffee']
+        tasks: ['clean', 'coffee']
+
     coffee:
       options:
         sourceMap: true
@@ -20,4 +25,5 @@ module.exports = (grunt) ->
   })
 
   # Default task.
-  grunt.registerTask "default", ['clean', "coffee"]
+  grunt.registerTask "build", ['clean', "coffee"]
+  grunt.registerTask "default", ['build', 'watch']
