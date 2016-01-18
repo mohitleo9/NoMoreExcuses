@@ -1,9 +1,9 @@
 registerClick = (resultCallback) ->
-  document.addEventListener('click', (event) ->
+  document.addEventListener 'click', (event) ->
     element = event.target
     path = getXpath(element)
     resultCallback('click', path)
-  )
+
 
 # http://stackoverflow.com/questions/2631820/im-storing-click-coordinates-in-my-db-and-then-reloading-them-later-and-showing/2631931#2631931
 getXpath = (element) ->
@@ -20,6 +20,7 @@ getXpath = (element) ->
         if sibling.nodeType == 1 && sibling.tagName == element.tagName
             ix++
 
+
 class EventData
   constructor: ->
     @data = []
@@ -30,5 +31,4 @@ class EventData
 
 # init code
 allData = new EventData
-
 registerClick(allData.addData)
