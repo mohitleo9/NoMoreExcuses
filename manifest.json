@@ -9,7 +9,16 @@
     "default_icon": "icons/icon.png",
     "default_popup": "static/popup.html"
   },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["dest/content_scripts/content.js"],
+    "run_at": "document_start"
+    }],
+  "background": {
+    "page": "static/background.html"
+  },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "<all_urls>"
   ]
 }

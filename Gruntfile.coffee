@@ -8,6 +8,8 @@ module.exports = (grunt) ->
       coffee_files:
         files: ['src/**/*.coffee']
         tasks: ['clean', 'coffee']
+        options:
+          livereload: true
 
     coffee:
       options:
