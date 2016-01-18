@@ -2,7 +2,7 @@ registerClick = (resultCallback) ->
   document.addEventListener 'click', (event) ->
     element = event.target
     path = getXpath(element)
-    resultCallback('click', path)
+    resultCallback('click', {path})
 
 
 # http://stackoverflow.com/questions/2631820/im-storing-click-coordinates-in-my-db-and-then-reloading-them-later-and-showing/2631931#2631931
