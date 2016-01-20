@@ -8,7 +8,10 @@
     "grunt-contrib-clean": "^0.7.0",
     "grunt-contrib-coffee": "^0.13.0",
     "grunt-contrib-watch": "^0.6.1",
-    "load-grunt-tasks": "^3.4.0"
+    "grunt-webpack": "^1.0.11",
+    "load-grunt-tasks": "^3.4.0",
+    "webpack": "^1.12.11",
+    "webpack-dev-server": "^1.14.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

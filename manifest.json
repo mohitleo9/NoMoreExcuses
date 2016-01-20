@@ -11,7 +11,7 @@
   },
   "content_scripts": [{
     "matches": ["<all_urls>"],
-    "js": ["dest/content_scripts/content.js"],
+    "js": ["dest/content_scripts/main.js"],
     "run_at": "document_start"
     }],
   "background": {

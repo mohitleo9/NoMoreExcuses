@@ -7,7 +7,7 @@ module.exports = (grunt) ->
     watch:
       coffee_files:
         files: ['src/**/*.coffee']
-        tasks: ['clean', 'coffee']
+        tasks: ['build']
         options:
           livereload: true
 
@@ -15,6 +15,7 @@ module.exports = (grunt) ->
       options:
         sourceMap: true
       compile:
+        bare: true
         expand: true
         cwd: 'src',
         src: ['**/*.coffee'],
@@ -24,8 +25,14 @@ module.exports = (grunt) ->
     clean:
       build: ['dest']
 
+    webpack:
+      content_scripts:
+          entry: './dest/content_scripts/content.js'
+          output:
+            path: './dest/content_scripts/'
+            filename: 'main.js'
   })
 
   # Default task.
-  grunt.registerTask "build", ['clean', "coffee"]
+  grunt.registerTask "build", ['clean', 'coffee', 'webpack']
   grunt.registerTask "default", ['build', 'watch']
