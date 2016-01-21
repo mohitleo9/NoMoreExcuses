@@ -1,10 +1,6 @@
 {getXpath} = require "./domUtils"
-
-registerClick = (resultCallback) ->
-  document.addEventListener 'click', (event) ->
-    element = event.target
-    path = getXpath(element)
-    resultCallback('click', {path})
+{registerAllEvents} = require "./recordEvents"
+_ = require "lodash"
 
 
 class EventData
@@ -16,10 +12,6 @@ class EventData
     console.log @data
 
 
-console.log "msg"
-console.log "msg"
-console.log "msg"
-console.log "msg"
 # init code
 allData = new EventData
-registerClick(allData.addData)
+registerAllEvents(allData.addData)

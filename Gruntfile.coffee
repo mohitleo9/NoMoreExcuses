@@ -31,6 +31,11 @@ module.exports = (grunt) ->
           output:
             path: './dest/content_scripts/'
             filename: 'main.js'
+      background_scripts:
+        entry: './dest/background_scripts/background.js'
+        output:
+          path: './dest/background_scripts/'
+          filename: 'main.js'
   })
 
   # Default task.
