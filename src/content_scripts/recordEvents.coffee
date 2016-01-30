@@ -1,15 +1,41 @@
-registerClick = (resultCallback) ->
-  document.addEventListener 'click', (event) ->
+{getXpath} = require "./domUtils"
+
+
+class EventBinder
+  constructor: (@eventName, @handler) ->
+
+  register: ->
+    document.addEventListener(@eventName, @handler)
+
+  unregister: ->
+    document.removeEventListener(@eventName, @handler)
+
+
+clickHandlerMaker = (resultCallback) ->
+  return (event) ->
     element = event.target
     path = getXpath(element)
     resultCallback('click', {path})
 
-# list of all handlers
-eventHanlers = [registerClick]
+
+eventHanlerMakers = {
+  'click': clickHandlerMaker
+}
+
+
+# global list of binders
+eventBinders = []
 
 # start listening for all the events
 registerAllEvents = (resultCallback) ->
-  for handler in eventHanlers
-    handler(resultCallback)
+  console.log 'called ok'
+  for eventName, maker of eventHanlerMakers
+    binder = new EventBinder(eventName, maker(resultCallback))
+    binder.register()
+    eventBinders.push(binder)
 
-module.exports = {registerAllEvents}
+unregisterAllEvents = ->
+  for binder in eventBinders
+    binder.unregister()
+
+module.exports = {registerAllEvents, unregisterAllEvents}

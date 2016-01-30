@@ -1,5 +1,4 @@
-{getXpath} = require "./domUtils"
-{registerAllEvents} = require "./recordEvents"
+{registerAllEvents, unregisterAllEvents} = require "./recordEvents"
 _ = require "lodash"
 
 
@@ -12,6 +11,21 @@ class EventData
     console.log @data
 
 
+setRecording = (recording) ->
+  console.log " the recording is #{recording}"
+  console.log recording
+  if recording
+    registerAllEvents(allData.addData)
+  else
+    unregisterAllEvents()
+
+
+setupMessageListeners = ->
+  chrome.runtime.onMessage.addListener((request, sender) ->
+    if request.recording?
+      setRecording(request.recording)
+  )
+
 # init code
+setupMessageListeners()
 allData = new EventData
-registerAllEvents(allData.addData)
