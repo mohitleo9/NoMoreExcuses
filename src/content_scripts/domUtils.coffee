@@ -4,7 +4,7 @@ getXpath = (element) ->
     if element.id
         return "id('#{element.id}')"
     else if element == document.body
-        return element.tagName
+        return "//#{element.tagName}"
 
     ix = 0
     siblings = element.parentNode.childNodes
