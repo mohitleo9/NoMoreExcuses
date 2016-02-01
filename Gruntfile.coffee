@@ -10,6 +10,11 @@ module.exports = (grunt) ->
         tasks: ['build']
         options:
           livereload: true
+      jsx:
+        files: ['src/**/*.jsx']
+        tasks: ['build']
+        options:
+          livereload: true
 
     coffee:
       options:

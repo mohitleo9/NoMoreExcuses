@@ -19,9 +19,10 @@ var RecordButton = React.createClass({
         };
   },
   toggleRecording: function(){
-    this.setState({recording: !this.state.recording});
+    var recording = !this.state.recording;
+    this.setState({recording: recording});
+    sendMessage({recording: recording});
     chrome.extension.getBackgroundPage().toggleRecording();
-    sendMessage({recording: this.state.recording});
   },
   render: function(){
     return (
