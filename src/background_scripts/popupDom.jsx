@@ -1,4 +1,4 @@
-React = require('React');
+React = require('react');
 ReactDOM = require('react-dom');
 popupService = require('./popupService');
 
