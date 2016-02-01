@@ -23,6 +23,7 @@ setRecording = (recording) ->
 
 setupMessageListeners = ->
   chrome.runtime.onMessage.addListener((request, sender) ->
+    console.log request
     if request.recording?
       setRecording(request.recording)
     else if request.playBack? and request.playBack
