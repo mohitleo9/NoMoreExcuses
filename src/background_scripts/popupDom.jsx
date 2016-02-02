@@ -1,8 +1,5 @@
 React = require('react');
 ReactDOM = require('react-dom');
-popupService = require('./popupService');
-
-var sendMessage = popupService.sendMessage;
 
 var Button = React.createClass({
   render: function() {
@@ -15,25 +12,24 @@ var Button = React.createClass({
 var RecordButton = React.createClass({
   getInitialState: function() {
     return {
-        recording: chrome.extension.getBackgroundPage().isRecording()
+        recording: chrome.extension.getBackgroundPage().recording()
         };
   },
   toggleRecording: function(){
     var recording = !this.state.recording;
     this.setState({recording: recording});
-    sendMessage({recording: recording});
-    chrome.extension.getBackgroundPage().toggleRecording();
+    chrome.extension.getBackgroundPage().recording(recording);
   },
   render: function(){
     return (
-    <Button clickHandler={this.toggleRecording} text={this.state.recording ? 'stop' : 'start'}/>
+    <Button clickHandler={this.toggleRecording} text={this.state.recording ? 'stop' : 'record'}/>
     );
   }
 });
 
 var PlayButton = React.createClass({
   play: function(){
-    sendMessage({playBack: true});
+    chrome.extension.getBackgroundPage().play();
   },
   render: function(){
     return (

@@ -3,20 +3,15 @@ _ = require "lodash"
 {playBack} = require "./playBack"
 
 
-class EventData
-  constructor: ->
-    @data = []
-
-  addData: (name, data) =>
-    @data.push({name: name, data: data})
-    console.log @data
+resultCallback = (name, data) ->
+  chrome.runtime.sendMessage({message: 'recordingData', name, data})
 
 
 setRecording = (recording) ->
   console.log " the recording is #{recording}"
   console.log recording
   if recording
-    registerAllEvents(allData.addData)
+    registerAllEvents(resultCallback)
   else
     unregisterAllEvents()
 
@@ -32,6 +27,12 @@ setupMessageListeners = ->
       playBack(allData.data)
   )
 
+getRecordingState = ->
+  # this is called on first time loading to get the initial recording state.
+  chrome.runtime.sendMessage({message: 'isRecording'}, (response) ->
+    setRecording(response.recording)
+  )
+
 # init code
+getRecordingState()
 setupMessageListeners()
-allData = new EventData
