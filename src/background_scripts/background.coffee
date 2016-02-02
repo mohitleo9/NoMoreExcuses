@@ -10,6 +10,9 @@ class EventData
     @data.push({name: name, data: data})
     console.log @data
 
+  clear: ->
+    @data = []
+
 
 sendMessage = (message) ->
   chrome.tabs.query({active: true, currentWindow: true}, (tabs) ->
@@ -17,6 +20,7 @@ sendMessage = (message) ->
   )
 
 startRecording = ->
+  allData.clear()
   sendMessage({recording: true})
   chrome.tabs.query({active: true, currentWindow: true}, (tabs) ->
     session({tab: tabs[0]})
@@ -46,6 +50,9 @@ window.session = (session) ->
 
 window.play = ->
   # send message to play
+  for step in allData.data
+    # probably add a timeout or promise
+    sendMessage({playBack: true, name: step.name, data: step.data})
 
 storeRecordingData = (name, data) ->
   allData.addData(name, data)

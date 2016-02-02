@@ -22,9 +22,8 @@ setupMessageListeners = ->
     if request.recording?
       setRecording(request.recording)
     else if request.playBack? and request.playBack
-      console.log 'called playback'
-      console.log allData.data
-      playBack(allData.data)
+      console.log request
+      playBack(request.name, request.data)
   )
 
 getRecordingState = ->
