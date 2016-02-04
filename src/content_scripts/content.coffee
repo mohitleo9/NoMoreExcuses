@@ -17,13 +17,16 @@ setRecording = (recording) ->
 
 
 setupMessageListeners = ->
-  chrome.runtime.onMessage.addListener((request, sender) ->
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) ->
     console.log request
     if request.recording?
       setRecording(request.recording)
     else if request.playBack? and request.playBack
-      console.log request
-      playBack(request.name, request.data)
+      playBack(request.name, request.data).then(->
+        sendResponse({done: 'ok'})
+      )
+      # return true so we can send response later!!.
+      return true
   )
 
 getRecordingState = ->

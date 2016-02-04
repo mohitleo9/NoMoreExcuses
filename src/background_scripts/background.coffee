@@ -1,3 +1,5 @@
+_ = require "lodash"
+Q = require "q"
 RECORDING = false
 currentRecordingSession = {}
 
@@ -14,9 +16,9 @@ class EventData
     @data = []
 
 
-sendMessage = (message) ->
+sendMessage = (message, responseCallback) ->
   chrome.tabs.query({active: true, currentWindow: true}, (tabs) ->
-    chrome.tabs.sendMessage(tabs[0].id, message)
+    chrome.tabs.sendMessage(tabs[0].id, message, responseCallback)
   )
 
 startRecording = ->
@@ -49,10 +51,23 @@ window.session = (session) ->
 
 
 window.play = ->
-  # send message to play
-  for step in allData.data
-    # probably add a timeout or promise
-    sendMessage({playBack: true, name: step.name, data: step.data})
+  # ugh chrome, why the fuck do you not return promises
+  sendMessageP = (step) ->
+    deferred = Q.defer()
+    responseCallback = (data) ->
+      if data.done?
+        deferred.resolve()
+      else
+        deferred.reject()
+
+    sendMessage({playBack: true, name: step.name, data: step.data}, responseCallback)
+    return deferred.promise
+
+  _.reduce(allData.data, (promise, step) ->
+    return promise.then(->
+      return sendMessageP(step)
+    )
+  , Q.when())
 
 storeRecordingData = (name, data) ->
   allData.addData(name, data)
