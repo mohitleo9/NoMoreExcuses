@@ -15,7 +15,8 @@ clickHandlerMaker = (resultCallback) ->
   return (event) ->
     element = event.target
     path = getXpath(element)
-    resultCallback('click', {path})
+    location = window.location.href
+    resultCallback('click', {path, location})
 
 
 eventHanlerMakers = {

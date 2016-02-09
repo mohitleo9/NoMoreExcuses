@@ -52,20 +52,56 @@ window.session = (session) ->
 
 window.play = ->
   # ugh chrome, why the fuck do you not return promises
+  ensureUrl = (step) ->
+    console.log 'step'
+    console.log step
+    deferred = Q.defer()
+
+    checkUrl = (step) ->
+      console.log 'stepping'
+      console.log step
+      if step.data.location?
+        console.log 'query'
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) ->
+          console.log 'tabs'
+          console.log tabs[0].url
+          console.log tabs[0].url
+          if tabs[0].url == step.data.location
+            deferred.resolve(step)
+          else setTimeout(_.partial(checkUrl, step), 100)
+        )
+    checkUrl(step)
+
+    forceResolve = ->
+      console.log 'forcing ensureUrl'
+      deferred.resolve()
+    setTimeout(forceResolve, 4000)
+    return deferred.promise
+
+
+
   sendMessageP = (step) ->
+    console.log 'sending step now'
+    console.log step
     deferred = Q.defer()
     responseCallback = (data) ->
+      console.log 'resolved'
       if data.done?
         deferred.resolve()
       else
         deferred.reject()
+
+      forceResolve = ->
+        console.log 'forcing'
+        deferred.resolve()
+      setTimeout(forceResolve, 4000)
 
     sendMessage({playBack: true, name: step.name, data: step.data}, responseCallback)
     return deferred.promise
 
   _.reduce(allData.data, (promise, step) ->
     return promise.then(->
-      return sendMessageP(step)
+      return ensureUrl(step).then(-> return sendMessageP(step))
     )
   , Q.when())
 

@@ -3,13 +3,36 @@ Q = require "q"
 findElementByXpath = (xpath) ->
   return document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
 
-clickPlayer = (eventData) ->
+foundElement = (xpath) ->
   deferred = Q.defer()
 
-  element = findElementByXpath(eventData.path)
-  element.click()
-  setTimeout(deferred.resolve, 3000)
+  isPresent = (xpath) ->
+    return !!findElementByXpath(xpath)
+
+  chain = ->
+    console.log 'chain'
+    setTimeout(->
+      if isPresent(xpath)
+        deferred.resolve()
+      else
+        chain()
+    ,
+    500)
+  chain()
   return deferred.promise
+
+clickPlayer = (eventData) ->
+
+  console.log 'path is', eventData.path
+  p =  foundElement(eventData.path).then(->
+    element = findElementByXpath(eventData.path)
+    console.log 'element'
+    console.log element
+    element.click()
+  )
+  console.log 'promise'
+  console.log p
+  return p
 
 eventPlayers = {
   'click': clickPlayer

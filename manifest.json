@@ -19,6 +19,7 @@
     "persistent": true
   },
   "permissions": [
+    "tabs",
     "management",
     "<all_urls>"
   ]
