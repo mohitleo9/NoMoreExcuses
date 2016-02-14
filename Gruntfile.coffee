@@ -44,6 +44,11 @@ module.exports = (grunt) ->
         }]
 
     webpack:
+      options:
+        resolve:
+          root: ['./dest']
+          alias:
+            common: "common"
       content_scripts:
           entry: './dest/content_scripts/content.js'
           output:

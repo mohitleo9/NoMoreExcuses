@@ -1,5 +1,6 @@
 _ = require "lodash"
 Q = require "q"
+{tryFunc} = require "common/utils"
 RECORDING = false
 currentRecordingSession = {}
 
@@ -49,55 +50,39 @@ window.session = (session) ->
   else
     return currentRecordingSession.data
 
+tabsQuery = (query) ->
+  deferred = Q.defer()
+
+  chrome.tabs.query(query, (tabs) ->
+    deferred.resolve(tabs)
+  )
+  return deferred.promise.timeout(1000)
+
 
 window.play = ->
   # ugh chrome, why the fuck do you not return promises
   ensureUrl = (step) ->
-    console.log 'step'
-    console.log step
-    deferred = Q.defer()
 
     checkUrl = (step) ->
-      console.log 'stepping'
-      console.log step
+      found = false
       if step.data.location?
-        console.log 'query'
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) ->
-          console.log 'tabs'
-          console.log tabs[0].url
-          console.log tabs[0].url
+        return tabsQuery({active: true, currentWindow: true}).then((tabs) ->
           if tabs[0].url == step.data.location
-            deferred.resolve(step)
-          else setTimeout(_.partial(checkUrl, step), 100)
+            found = true
+          return found
         )
-    checkUrl(step)
-
-    forceResolve = ->
-      console.log 'forcing ensureUrl'
-      deferred.resolve()
-    setTimeout(forceResolve, 4000)
-    return deferred.promise
-
-
+    return tryFunc(_.partial(checkUrl, step))
 
   sendMessageP = (step) ->
-    console.log 'sending step now'
-    console.log step
     deferred = Q.defer()
     responseCallback = (data) ->
-      console.log 'resolved'
       if data.done?
         deferred.resolve()
       else
         deferred.reject()
 
-      forceResolve = ->
-        console.log 'forcing'
-        deferred.resolve()
-      setTimeout(forceResolve, 4000)
-
     sendMessage({playBack: true, name: step.name, data: step.data}, responseCallback)
-    return deferred.promise
+    return deferred.promise.timeout(7000)
 
   _.reduce(allData.data, (promise, step) ->
     return promise.then(->
