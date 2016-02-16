@@ -1,6 +1,8 @@
 _ = require "lodash"
 Q = require "q"
 {tryFunc} = require "common/utils"
+thenChrome = require('then-chrome/out/api')(Q.Promise)
+
 RECORDING = false
 currentRecordingSession = {}
 
@@ -17,20 +19,21 @@ class EventData
     @data = []
 
 
-sendMessage = (message, responseCallback) ->
-  chrome.tabs.query({active: true, currentWindow: true}, (tabs) ->
-    chrome.tabs.sendMessage(tabs[0].id, message, responseCallback)
-  )
+activeTab = ->
+  return thenChrome.tabs.query({active: true, currentWindow: true}).then (tabs) -> return tabs[0]
+
+sendMessageActive = (message) ->
+  return activeTab().then (tab)->
+    return thenChrome.tabs.sendMessage(tab.id, message)
 
 startRecording = ->
   allData.clear()
-  sendMessage({recording: true})
-  chrome.tabs.query({active: true, currentWindow: true}, (tabs) ->
-    session({tab: tabs[0]})
-  )
+  sendMessageActive({recording: true})
+  activeTab().then (tab) ->
+    session({tab: tab})
 
 stopRecording = ->
-  sendMessage({recording: false})
+  sendMessageActive({recording: false})
   session({})
 
 window.recording = (recording) ->
@@ -50,30 +53,20 @@ window.session = (session) ->
   else
     return currentRecordingSession.data
 
-tabsQuery = (query) ->
-  deferred = Q.defer()
-
-  chrome.tabs.query(query, (tabs) ->
-    deferred.resolve(tabs)
-  )
-  return deferred.promise.timeout(1000)
-
 
 window.play = ->
-  # ugh chrome, why the fuck do you not return promises
   ensureUrl = (step) ->
-
     checkUrl = (step) ->
       found = false
       if step.data.location?
-        return tabsQuery({active: true, currentWindow: true}).then((tabs) ->
-          if tabs[0].url == step.data.location
+        return activeTab().then((tab) ->
+          if tab.url == step.data.location
             found = true
           return found
         )
     return tryFunc(_.partial(checkUrl, step))
 
-  sendMessageP = (step) ->
+  playStep = (step) ->
     deferred = Q.defer()
     responseCallback = (data) ->
       if data.done?
@@ -81,12 +74,12 @@ window.play = ->
       else
         deferred.reject()
 
-    sendMessage({playBack: true, name: step.name, data: step.data}, responseCallback)
+    sendMessageActive({playBack: true, name: step.name, data: step.data}).then(responseCallback)
     return deferred.promise.timeout(7000)
 
   _.reduce(allData.data, (promise, step) ->
     return promise.then(->
-      return ensureUrl(step).then(-> return sendMessageP(step))
+      return ensureUrl(step).then(-> return playStep(step))
     )
   , Q.when())
 
