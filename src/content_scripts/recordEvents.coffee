@@ -1,11 +1,16 @@
 {getXpath} = require "./domUtils"
+{tryFunc} = require "common/utils"
 
 
 class EventBinder
   constructor: (@eventName, @handler) ->
 
   register: ->
-    document.body.addEventListener(@eventName, @handler)
+    isBodyPresent = ->
+      return !!document.body
+    tryFunc(isBodyPresent).then(=>
+      document.body.addEventListener(@eventName, @handler)
+    )
 
   unregister: ->
     document.body.removeEventListener(@eventName, @handler)

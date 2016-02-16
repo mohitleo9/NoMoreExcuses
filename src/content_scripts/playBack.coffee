@@ -1,25 +1,15 @@
 Q = require "q"
+{tryFunc} = require "common/utils"
 
 findElementByXpath = (xpath) ->
   return document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
 
 foundElement = (xpath) ->
-  deferred = Q.defer()
 
   isPresent = (xpath) ->
     return !!findElementByXpath(xpath)
+  return tryFunc(_.partial(isPresent, xpath))
 
-  chain = ->
-    console.log 'chain'
-    setTimeout(->
-      if isPresent(xpath)
-        deferred.resolve()
-      else
-        chain()
-    ,
-    500)
-  chain()
-  return deferred.promise
 
 clickPlayer = (eventData) ->
 
