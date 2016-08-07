@@ -10,6 +10,11 @@ module.exports = (grunt) ->
         tasks: ['build']
         options:
           livereload: true
+      jsx:
+        files: ['src/**/*.jsx']
+        tasks: ['build']
+        options:
+          livereload: true
 
     coffee:
       options:
@@ -25,7 +30,25 @@ module.exports = (grunt) ->
     clean:
       build: ['dest']
 
+    babel:
+      options:
+        sourceMap: true
+        presets: ['react']
+      popup:
+        files: [{
+          expand: true,
+          cwd: './src/background_scripts/'
+          src: ['**/*.jsx']
+          dest: './dest/background_scripts/'
+          ext: '.js'
+        }]
+
     webpack:
+      options:
+        resolve:
+          root: ['./dest']
+          alias:
+            common: "common"
       content_scripts:
           entry: './dest/content_scripts/content.js'
           output:
@@ -36,8 +59,13 @@ module.exports = (grunt) ->
         output:
           path: './dest/background_scripts/'
           filename: 'main.js'
+      popup:
+        entry: './dest/background_scripts/popupDom.js'
+        output:
+          path: './dest/background_scripts/'
+          filename: 'popup_main.js'
   })
 
   # Default task.
-  grunt.registerTask "build", ['clean', 'coffee', 'webpack']
+  grunt.registerTask "build", ['clean', 'coffee', 'babel', 'webpack']
   grunt.registerTask "default", ['build', 'watch']
