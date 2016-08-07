@@ -29,6 +29,39 @@ var RecordButton = React.createClass({
   }
 });
 
+var DataTable = React.createClass({
+  getInitialState: function() {
+    return {data: chrome.extension.getBackgroundPage().getRecordingData()};
+  },
+  componentDidMount: function(){
+    chrome.extension.onMessage.addListener((request, sender, sendResponse) =>{
+      if (request.message && request.message == 'popupData'){
+        this.setState({data: request.data});
+      }
+    });
+  },
+  render: function(){
+    return (
+        <table>
+          <thead>
+            <tr> Action </tr>
+            <tr> path </tr>
+          </thead>
+          <tbody>
+            {this.state.data.map( (row, index) =>{
+                return (
+                    <tr>
+                      <td>{row.data.path}</td>
+                      <td>{row.name}</td>
+                    </tr>
+                );
+            })}
+          </tbody>
+        </table>
+    );
+  }
+});
+
 var PlayButton = React.createClass({
   play: function(){
     chrome.extension.getBackgroundPage().play();
@@ -46,6 +79,8 @@ var App = React.createClass({
     <div>
       <RecordButton />
       <PlayButton />
+      <br />
+      <DataTable />
     </div>
     );
   }

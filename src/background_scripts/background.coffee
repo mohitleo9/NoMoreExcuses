@@ -18,6 +18,10 @@ class EventData
   clear: ->
     @data = []
 
+  getData: =>
+    return @data || []
+
+
 
 activeTab = ->
   return thenChrome.tabs.query({active: true, currentWindow: true}).then (tabs) -> return tabs[0]
@@ -45,6 +49,9 @@ window.recording = (recording) ->
       stopRecording()
   else
     return RECORDING
+
+window.getRecordingData = () ->
+  return allData.getData()
 
 window.session = (session) ->
   if session?
@@ -86,6 +93,9 @@ window.play = ->
 storeRecordingData = (name, data) ->
   allData.addData(name, data)
 
+updatePopupData = () ->
+  # something here
+  chrome.runtime.sendMessage({message: "popupData", data: allData.getData()})
 
 # init
 chrome.extension.onMessage.addListener((request, sender, sendResponse) ->
@@ -97,6 +107,7 @@ chrome.extension.onMessage.addListener((request, sender, sendResponse) ->
 
   else if request.message? and request.message == 'recordingData'
     storeRecordingData(request.name, request.data)
+    updatePopupData()
 )
 
 allData = new EventData
