@@ -18,6 +18,7 @@ var RecordButton = React.createClass({
   toggleRecording: function(){
     var recording = !this.state.recording;
     this.setState({recording: recording});
+    chrome.browserAction.setIcon({"path": recording ? "/icons/recording.png" : "/icons/icon.png"});
     chrome.extension.getBackgroundPage().recording(recording);
   },
   render: function(){
