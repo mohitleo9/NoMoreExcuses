@@ -20,6 +20,7 @@ var RecordButton = React.createClass({
     this.setState({recording: recording});
     chrome.browserAction.setIcon({"path": recording ? "/icons/recording.png" : "/icons/icon.png"});
     chrome.extension.getBackgroundPage().recording(recording);
+    window.close();
   },
   render: function(){
     return (
