@@ -65,6 +65,7 @@ var DataTable = React.createClass({
 var PlayButton = React.createClass({
   play: function(){
     chrome.extension.getBackgroundPage().play();
+    window.close();
   },
   render: function(){
     return (
