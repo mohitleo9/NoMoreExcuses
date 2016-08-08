@@ -53,6 +53,10 @@ window.recording = (recording) ->
 window.getRecordingData = () ->
   return allData.getData()
 
+window.clearData = ->
+  allData.clear()
+  updatePopupData()
+
 window.session = (session) ->
   if session?
     # use as setter

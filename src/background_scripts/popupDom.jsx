@@ -74,12 +74,24 @@ var PlayButton = React.createClass({
   }
 });
 
+var ClearButton = React.createClass({
+  clear: function(){
+    chrome.extension.getBackgroundPage().clearData();
+  },
+  render: function(){
+    return (
+    <Button clickHandler={this.clear} text='clear' />
+    );
+  }
+});
+
 var App = React.createClass({
   render: function(){
     return (
     <div>
       <RecordButton />
       <PlayButton />
+      <ClearButton />
       <br />
       <DataTable />
     </div>
