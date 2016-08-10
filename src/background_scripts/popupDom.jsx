@@ -4,7 +4,7 @@ ReactDOM = require('react-dom');
 var Button = React.createClass({
   render: function() {
     return (
-      <button onClick={this.props.clickHandler}>{this.props.text}</button>
+      <button type="button" className="btn btn-primary" onClick={this.props.clickHandler}>{this.props.text}</button>
     );
   }
 });
@@ -42,10 +42,12 @@ var DataTable = React.createClass({
   },
   render: function(){
     return (
-        <table>
+        <table className="table table-striped table-hover">
           <thead>
-            <tr> Action </tr>
-            <tr> path </tr>
+            <tr>
+              <th> Action </th>
+              <th> path </th>
+            </tr>
           </thead>
           <tbody>
             {this.state.data.map( (row, index) =>{
@@ -88,10 +90,12 @@ var ClearButton = React.createClass({
 var App = React.createClass({
   render: function(){
     return (
-    <div>
-      <RecordButton />
-      <PlayButton />
-      <ClearButton />
+    <div className="container-fluid">
+      <div className="btn-group">
+        <RecordButton />
+        <PlayButton />
+        <ClearButton />
+      </div>
       <br />
       <DataTable />
     </div>
